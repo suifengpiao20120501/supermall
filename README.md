@@ -1,4 +1,4 @@
-# supermall2
+# supermall
 
 ## Project setup
 ```
