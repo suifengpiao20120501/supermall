@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-/* 4.推荐使用第四种方式 */
+/* 4.第四种方式，推荐使用 */
 export function request(config) {
   /* 1.创建axios的实例 */
   const instance = axios.create({
@@ -10,8 +10,7 @@ export function request(config) {
 
   /* 2.axios的全局拦截器 */
   /* 2.1.请求拦截器 */
-  axios.interceptors.request.use(config  => {
-    // console.log(config);
+  instance.interceptors.request.use(config  => {
     // 1.假设config中的一些信息不符合服务器的要求
     // 2.每次发送网络请求时，都希望在界面中显示一个请求的图标
     // 3.某些网络请求（比如登陆（token）），必须携带一些特殊的信息
@@ -22,10 +21,9 @@ export function request(config) {
 
   /* 2.2.响应拦截器 */
   instance.interceptors.response.use(res => {
-    // console.log(res);
     return res.data // 返回我们需要的data信息
   }, err => {
-    // console.log(err);
+    console.log(err);
   })
 
   /* 3.发送真正的网络请求 */
