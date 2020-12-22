@@ -1,106 +1,22 @@
 <template>
-  <div id="home">
+  <div id="home" class="wrapper">
+    <!-- 导航栏 -->
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
-    <home-recommend-view :recommends="recommends"/>
-    <feature-view/>
-    <tab-control class="tab-control"
-                 :titles="['流行', '新款', '精选']"
-                 @tabClick="tabClick"/>
-    <goods-list :goods="showGoods"/>
-    <ul>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-      <li>测试</li>
-    </ul>
+
+    <!-- 页面滑动 -->
+    <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll">
+      <home-recommend-view :recommends="recommends"/>
+      <feature-view/>
+      <tab-control class="tab-control"
+                   :titles="['流行', '新款', '精选']"
+                   @tabClick="tabClick"/>
+      <goods-list :goods="showGoods"/>
+    </scroll>
+
+    <!-- 返回顶部 -->
+    <back-top @click.native="backClick" v-show="isShowBackTop"/>
   </div>
 </template>
 
@@ -109,8 +25,10 @@
   import FeatureView from "./childComps/FeatureView";
 
   import NavBar from "components/common/navbar/NavBar";
+  import Scroll from "components/common/scroll/Scroll";
   import TabControl from "components/content/tabControl/TabControl";
   import GoodsList from "components/content/goods/GoodsList";
+  import BackTop from "components/content/backTop/BackTop";
 
   import { getHomeMultidata, getHomeGoods } from "@/network/home";
 
@@ -121,7 +39,9 @@
       NavBar,
       HomeRecommendView,
       FeatureView,
-      GoodsList
+      GoodsList,
+      Scroll,
+      BackTop
     },
     data() {
       return {
@@ -132,7 +52,8 @@
           'new': {page: 0, list: []},
           'sell': {page: 0, list: []}
         },
-        currentType: 'pop'
+        currentType: 'pop',
+        isShowBackTop: false
       }
     },
     computed: {
@@ -166,6 +87,24 @@
         }
       },
       /**
+       * 点击右下角图片返回顶部，
+       * 通过 ref属性 获取 Scroll组件中的scroll属性值，
+       * 然后调用scrollTo(0, 0, 500)实现功能
+       * 方法中前面两个参数是坐标，
+       * 第三个参数是执行回到顶部的时间（500毫秒）
+       */
+      backClick() {
+        this.$refs.scroll.scroll.scrollTo(0, 0, 500)
+      },
+      /**
+       * 根据监听页面滚动的位置，
+       * 判断是否显示右下角的图片
+       */
+      contentScroll(position) {
+        // console.log(position);
+        this.isShowBackTop = (-position.y) > 1000
+      },
+      /**
        * 网络请求相关的方法
        */
       getHomeMultidata() {
@@ -193,7 +132,9 @@
 
 <style scoped>
   #home {
-    padding-top: 44px;
+    /*padding-top: 44px;*/
+    height: 100vh;
+    position: relative;
   }
 
   .home-nav {
@@ -213,4 +154,18 @@
     top: 44px; /* 距离顶部44px时，固定组件 */
     z-index: 9;
   }
+
+  .content {
+    overflow: hidden;
+    position: absolute;
+    top: 44px;
+    bottom: 49px;
+    right: 0;
+  }
+
+  /*.content {
+    height: calc(100% - 93px);
+    overflow: hidden;
+    margin-top: 44px;
+  }*/
 </style>
