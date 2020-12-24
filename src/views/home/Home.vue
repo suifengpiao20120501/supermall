@@ -4,14 +4,23 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
-
+    <tab-control class="tab-control"
+                 :titles="['流行', '新款', '精选']"
+                 @tabClick="tabClick"
+                 ref="tabControl1"
+                 v-show="isTabFixed"/>
     <!-- 页面滑动 -->
-    <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll">
+    <scroll class="content"
+            ref="scroll"
+            :probe-type="3"
+            @scroll="contentScroll"
+            :pull-up-load="true"
+            @pullingUp="loadMore">
       <home-recommend-view :recommends="recommends"/>
       <feature-view/>
-      <tab-control class="tab-control"
-                   :titles="['流行', '新款', '精选']"
-                   @tabClick="tabClick"/>
+      <tab-control :titles="['流行', '新款', '精选']"
+                   @tabClick="tabClick"
+                   ref="tabControl2"/>
       <goods-list :goods="showGoods"/>
     </scroll>
 
@@ -53,13 +62,28 @@
           'sell': {page: 0, list: []}
         },
         currentType: 'pop',
-        isShowBackTop: false
+        isShowBackTop: false, /* 回到顶部，默认不返回顶部 */
+        tabOffsetTop: 267, /* tabControl到顶部距离 */
+        isTabFixed: false, /* tabControl是否吸顶，默认不吸顶 */
+        saveY: 0 /* 保存页面滑动后高度，默认是0 */
       }
     },
     computed: {
       showGoods() {
         return this.goods[this.currentType].list;
       }
+    },
+    activated() {
+      /* 新创建组件时，页面滚动到离开时的位置 */
+      this.$refs.scroll.scroll.scrollTo(0, this.saveY);
+      /* 重新刷新，防止页面不能滚动 */
+      this.$refs.scroll.scroll.refresh();
+    },
+    deactivated() {
+      /* 离开首页时，记录离开首页时的位置 */
+      this.saveY = this.$refs.scroll.scroll.y;
+      /* 测试离开时的页面位置 */
+      console.log(this.$refs.scroll.scroll.y);
     },
     created() {
       /* 1.请求多个数据 */
@@ -68,6 +92,10 @@
       this.getHomeGoods('pop');
       this.getHomeGoods('new');
       this.getHomeGoods('sell');
+    },
+    mounted() {
+      /* 获取tabControl的offsetTop，所有的组件都有一个属性 $el，用于获取组件中的元素 */
+      // this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop
     },
     methods: {
       /**
@@ -85,6 +113,8 @@
             this.currentType = 'sell';
             break;
         }
+        this.$refs.tabControl1.currentIndex = index;
+        this.$refs.tabControl2.currentIndex = index;
       },
       /**
        * 点击右下角图片返回顶部，
@@ -94,15 +124,25 @@
        * 第三个参数是执行回到顶部的时间（500毫秒）
        */
       backClick() {
-        this.$refs.scroll.scroll.scrollTo(0, 0, 500)
+        this.$refs.scroll && this.$refs.scroll.scroll.scrollTo(0, 0, 500)
       },
       /**
        * 根据监听页面滚动的位置，
        * 判断是否显示右下角的图片
        */
       contentScroll(position) {
-        // console.log(position);
+        /* 1.判断BackTop是否显示 */
         this.isShowBackTop = (-position.y) > 1000
+        /* 2.决定tabControl是否吸顶（position：fixed） */
+        this.isTabFixed = (-position.y) > this.tabOffsetTop
+      },
+      /**
+       * 上拉加载更多数据
+       */
+      loadMore() {
+        this.getHomeGoods(this.currentType);
+        /* 重新刷新，重新计算可以滚动高度 */
+        this.$refs.scroll && this.$refs.scroll.scroll.refresh();
       },
       /**
        * 网络请求相关的方法
@@ -124,6 +164,9 @@
           /* 使用...语法将数组中每个元素取出来后添加到数组中，页数加1 */
           this.goods[type].list.push(...res.data.list);
           this.goods[type].page += 1;
+
+          /* 页面上拉刷新一次数据后，继续刷新数据 */
+          this.$refs.scroll.scroll.finishPullUp();
         })
       }
     }
@@ -142,18 +185,23 @@
     color: #fff;
 
     /* 固定导航栏在顶部 */
-    position: fixed;
+    /*position: fixed;
     left: 0;
     right: 0;
     top: 0;
-    z-index: 9;
+    z-index: 9;*/
   }
 
   .tab-control {
-    position: sticky; /* 滑动页面时固定tabControl组件 */
-    top: 44px; /* 距离顶部44px时，固定组件 */
+    position: relative;
     z-index: 9;
   }
+
+  /*.tab-control {
+    position: sticky; !* 滑动页面时固定tabControl组件 *!
+    top: 44px; !* 距离顶部44px时，固定组件 *!
+    z-index: 9;
+  }*/
 
   .content {
     overflow: hidden;
