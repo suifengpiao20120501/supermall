@@ -4,6 +4,7 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
+    <!-- 标题控制 -->
     <tab-control class="tab-control"
                  :titles="['流行', '新款', '精选']"
                  @tabClick="tabClick"
@@ -16,6 +17,8 @@
             @scroll="contentScroll"
             :pull-up-load="true"
             @pullingUp="loadMore">
+      <!-- 轮播图 -->
+      <home-swiper :banners="banners" @swiperImageLoad="swiperImageLoad"/>
       <home-recommend-view :recommends="recommends"/>
       <feature-view/>
       <tab-control :titles="['流行', '新款', '精选']"
@@ -23,18 +26,19 @@
                    ref="tabControl2"/>
       <goods-list :goods="showGoods"/>
     </scroll>
-
     <!-- 返回顶部 -->
     <back-top @click.native="backClick" v-show="isShowBackTop"/>
   </div>
 </template>
 
 <script>
+  import HomeSwiper from "./childComps/HomeSwiper";
   import HomeRecommendView from "./childComps/HomeRecommendView";
   import FeatureView from "./childComps/FeatureView";
 
   import NavBar from "components/common/navbar/NavBar";
   import Scroll from "components/common/scroll/Scroll";
+
   import TabControl from "components/content/tabControl/TabControl";
   import GoodsList from "components/content/goods/GoodsList";
   import BackTop from "components/content/backTop/BackTop";
@@ -44,6 +48,7 @@
   export default {
     name: "Home",
     components: {
+      HomeSwiper,
       TabControl,
       NavBar,
       HomeRecommendView,
@@ -63,9 +68,9 @@
         },
         currentType: 'pop',
         isShowBackTop: false, /* 回到顶部，默认不返回顶部 */
-        tabOffsetTop: 267, /* tabControl到顶部距离 */
+        tabOffsetTop: 0, /* tabControl到顶部距离 */
         isTabFixed: false, /* tabControl是否吸顶，默认不吸顶 */
-        saveY: 0 /* 保存页面滑动后高度，默认是0 */
+        saveY: 0 /* 保存页面滑动后高度，默认是 0 */
       }
     },
     computed: {
@@ -92,10 +97,6 @@
       this.getHomeGoods('pop');
       this.getHomeGoods('new');
       this.getHomeGoods('sell');
-    },
-    mounted() {
-      /* 获取tabControl的offsetTop，所有的组件都有一个属性 $el，用于获取组件中的元素 */
-      // this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop
     },
     methods: {
       /**
@@ -143,6 +144,10 @@
         this.getHomeGoods(this.currentType);
         /* 重新刷新，重新计算可以滚动高度 */
         this.$refs.scroll && this.$refs.scroll.scroll.refresh();
+      },
+      /* 获取tabControl组件到顶部的距离 */
+      swiperImageLoad() {
+        this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop;
       },
       /**
        * 网络请求相关的方法
