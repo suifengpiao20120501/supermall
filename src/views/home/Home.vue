@@ -41,9 +41,11 @@
 
   import TabControl from "components/content/tabControl/TabControl";
   import GoodsList from "components/content/goods/GoodsList";
-  import BackTop from "components/content/backTop/BackTop";
 
   import { getHomeMultidata, getHomeGoods } from "@/network/home";
+  import { backTopMixin } from "common/mixin";
+  // import { debounce } from "common/utils"
+
 
   export default {
     name: "Home",
@@ -54,9 +56,10 @@
       HomeRecommendView,
       FeatureView,
       GoodsList,
-      Scroll,
-      BackTop
+      Scroll
     },
+    /* 混入回到顶部 */
+    mixins: [backTopMixin],
     data() {
       return {
         banners: [],
@@ -67,7 +70,6 @@
           'sell': {page: 0, list: []}
         },
         currentType: 'pop',
-        isShowBackTop: false, /* 回到顶部，默认不返回顶部 */
         tabOffsetTop: 0, /* tabControl到顶部距离 */
         isTabFixed: false, /* tabControl是否吸顶，默认不吸顶 */
         saveY: 0 /* 保存页面滑动后高度，默认是 0 */
@@ -118,24 +120,14 @@
         this.$refs.tabControl2.currentIndex = index;
       },
       /**
-       * 点击右下角图片返回顶部，
-       * 通过 ref属性 获取 Scroll组件中的scroll属性值，
-       * 然后调用scrollTo(0, 0, 500)实现功能
-       * 方法中前面两个参数是坐标，
-       * 第三个参数是执行回到顶部的时间（500毫秒）
-       */
-      backClick() {
-        this.$refs.scroll && this.$refs.scroll.scroll.scrollTo(0, 0, 500)
-      },
-      /**
        * 根据监听页面滚动的位置，
        * 判断是否显示右下角的图片
        */
       contentScroll(position) {
         /* 1.判断BackTop是否显示 */
-        this.isShowBackTop = (-position.y) > 1000
+        this.listenShowBackTop(position);
         /* 2.决定tabControl是否吸顶（position：fixed） */
-        this.isTabFixed = (-position.y) > this.tabOffsetTop
+        this.isTabFixed = (-position.y) > this.tabOffsetTop;
       },
       /**
        * 上拉加载更多数据
