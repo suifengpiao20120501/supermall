@@ -19,6 +19,7 @@
     <detail-bottom-bar @addToCart="addToCart"/>
     <!-- 返回顶部 -->
     <back-top @click.native="backClick" v-show="isShowBackTop"/>
+    <toast :message="message" :isShow="show"/>
   </div>
 </template>
 
@@ -34,10 +35,12 @@
 
   import Scroll from "components/common/scroll/Scroll";
   import GoodsList from "components/content/goods/GoodsList";
+  import Toast from "components/common/toast/Toast";
 
   import { getDetail, Goods, Shop, GoodsParam, getRecommend } from "network/detail";
   import { debounce } from "common/utils"
   import { backTopMixin } from "common/mixin";
+  import { mapActions } from "vuex";
 
   export default {
     name: "Detail",
@@ -51,7 +54,8 @@
       DetailCommentInfo,
       Scroll,
       GoodsList,
-      DetailBottomBar
+      DetailBottomBar,
+      Toast
     },
     /* 混入回到顶部 */
     mixins: [backTopMixin],
@@ -67,7 +71,9 @@
         recommends: [],
         themeTopYs: [], /* 保存商品、参数、评论、推荐四个组件的offsetTop高度 */
         getThemeTopY: null, /* 给themeTopYs数组赋值 */
-        currentIndex: 0
+        currentIndex: 0,
+        message: '',
+        show: false
       }
     },
     created() {
@@ -108,6 +114,7 @@
       }, 300)
     },
     methods: {
+      ...mapActions(['addCart']),
       imageLoad() {
         console.log('刷新成功');
         this.$refs.scroll.scroll.refresh();
@@ -148,9 +155,11 @@
         product.desc = this.goods.desc;
         product.price = this.goods.realPrice;
         product.iid = this.goods.iid;
+
         /* 2.将商品添加到购物车里 */
-        // this.$store.commit('addCart', product);
-        this.$store.dispatch('addCart', product);
+        this.addCart(product).then(res => {
+          this.$toast.show(res, 1500);
+        });
       }
     }
   }

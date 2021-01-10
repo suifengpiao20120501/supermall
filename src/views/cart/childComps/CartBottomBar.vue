@@ -1,7 +1,9 @@
 <template>
   <div class="bottom-bar">
     <div class="check-content">
-      <check-button class="check-button"/>
+      <check-button class="check-button"
+        :is-checked="isSelectAll"
+        @click.native="checkClick"/>
       <span>全选</span>
     </div>
 
@@ -36,6 +38,29 @@
       },
       checkLength() {
         return this.cartList.filter(item => item.checked).length;
+      },
+      isSelectAll() {
+        if (this.cartList.length === 0) {
+          return false
+        } else {
+          /**
+           * 循环遍历每一个对象，找到所有未被选中的对象，返回true，然后取反为false，效率很低。
+           */
+          // return !(this.cartList.filter(item => !item.checked).length);
+          /**
+           * 找到其中一个未被选中的对象，就返回true，然后取反为false，效率更高。
+           */
+          return !this.cartList.find(item => !item.checked);
+        }
+      }
+    },
+    methods: {
+      checkClick() {
+        if (this.isSelectAll) { /* 全部选中 */
+          this.cartList.forEach(item => item.checked = false);
+        } else { /* 部分或全部不选中 */
+          this.cartList.forEach(item => item.checked = true);
+        }
       }
     }
   }
