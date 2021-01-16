@@ -44,8 +44,7 @@
 
   import { getHomeMultidata, getHomeGoods } from "@/network/home";
   import { backTopMixin } from "common/mixin";
-  // import { debounce } from "common/utils"
-
+  import { debounce } from "common/utils";
 
   export default {
     name: "Home",
@@ -82,9 +81,9 @@
     },
     activated() {
       /* 新创建组件时，页面滚动到离开时的位置 */
-      this.$refs.scroll.scroll.scrollTo(0, this.saveY);
+      this.$refs.scroll.scrollTo(0, this.saveY);
       /* 重新刷新，防止页面不能滚动 */
-      this.$refs.scroll.scroll.refresh();
+      this.$refs.scroll.refresh();
     },
     deactivated() {
       /* 离开首页时，记录离开首页时的位置 */
@@ -99,6 +98,14 @@
       this.getHomeGoods('pop');
       this.getHomeGoods('new');
       this.getHomeGoods('sell');
+    },
+    mounted() {
+      /* 防止刷新频繁，进行防抖操作 */
+      const refresh = debounce(this.$refs.scroll.refresh, 300);
+      /* 监听item中图片加载完成 */
+      this.$bus.$on('itemImageLoad', () => {
+        refresh();
+      });
     },
     methods: {
       /**
@@ -135,7 +142,7 @@
       loadMore() {
         this.getHomeGoods(this.currentType);
         /* 重新刷新，重新计算可以滚动高度 */
-        this.$refs.scroll && this.$refs.scroll.scroll.refresh();
+        this.$refs.scroll.refresh();
       },
       /* 获取tabControl组件到顶部的距离 */
       swiperImageLoad() {
@@ -163,7 +170,7 @@
           this.goods[type].page += 1;
 
           /* 页面上拉刷新一次数据后，继续刷新数据 */
-          this.$refs.scroll.scroll.finishPullUp();
+          this.$refs.scroll.finishPullUp();
         })
       }
     }

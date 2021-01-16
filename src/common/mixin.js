@@ -18,7 +18,7 @@ export const backTopMixin = {
      * 第三个参数是执行回到顶部的时间（500毫秒）
      */
     backClick() {
-      this.$refs.scroll && this.$refs.scroll.scroll.scrollTo(0, 0, 500)
+      this.$refs.scroll.scroll && this.$refs.scroll.scroll.scrollTo(0, 0, 500)
     },
     /* 监听是否显示右下角返回顶部图标 */
     listenShowBackTop(position) {

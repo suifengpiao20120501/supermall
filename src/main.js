@@ -17,6 +17,9 @@ Vue.use(VueLazyload, {
   loading: require('./assets/img/common/placeholder.png')
 });
 
+/* 添加 $bus 到 Vue原型中，赋值为 Vue 实例 */
+Vue.prototype.$bus = new Vue();
+
 /* 解决移动端300毫秒延迟 */
 FastClick.attach(document.body);
 
