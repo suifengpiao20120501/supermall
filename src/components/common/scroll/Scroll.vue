@@ -44,7 +44,7 @@
 
       /* 3.监听上拉事件 */
       this.scroll.on('pullingUp', () => {
-        this.$emit('pullingUp')
+        this.$emit('pullingUp');
       })
     },
     methods: {
@@ -56,6 +56,9 @@
       },
       refresh() {
         this.scroll && this.scroll.refresh();
+      },
+      getScrollY() {
+        return this.scroll ? this.scroll.y : 0;
       }
     }
   }

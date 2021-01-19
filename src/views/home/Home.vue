@@ -87,7 +87,7 @@
     },
     deactivated() {
       /* 离开首页时，记录离开首页时的位置 */
-      this.saveY = this.$refs.scroll.scroll.y;
+      this.saveY = this.$refs.scroll.getScrollY();
       /* 测试离开时的页面位置 */
       console.log(this.$refs.scroll.scroll.y);
     },
@@ -100,7 +100,7 @@
       this.getHomeGoods('sell');
     },
     mounted() {
-      /* 防止刷新频繁，进行防抖操作 */
+      /* 防止轮播图加载图片刷新频繁，进行防抖操作 */
       const refresh = debounce(this.$refs.scroll.refresh, 300);
       /* 监听item中图片加载完成 */
       this.$bus.$on('itemImageLoad', () => {
@@ -127,8 +127,7 @@
         this.$refs.tabControl2.currentIndex = index;
       },
       /**
-       * 根据监听页面滚动的位置，
-       * 判断是否显示右下角的图片
+       * 根据监听页面滚动的位置
        */
       contentScroll(position) {
         /* 1.判断BackTop是否显示 */
@@ -144,7 +143,7 @@
         /* 重新刷新，重新计算可以滚动高度 */
         this.$refs.scroll.refresh();
       },
-      /* 获取tabControl组件到顶部的距离 */
+      /* 获取 tabControl组件 到顶部的距离 */
       swiperImageLoad() {
         this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop;
       },
