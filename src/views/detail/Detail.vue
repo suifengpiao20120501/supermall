@@ -78,7 +78,7 @@
     },
     created() {
       /* 1.保存传入的iid */
-      this.iid = this.$route.params.iid
+      this.iid = this.$route.params.iid;
       /* 2.根据iid请求详情数据 */
       getDetail(this.iid).then(res => {
         console.log(res);
@@ -167,7 +167,7 @@
 
 <style scoped>
   #detail {
-    position: relative;
+    position: fixed;
     z-index: 9;
     background-color: #fff;
     height: 100vh;
@@ -181,8 +181,5 @@
 
   .content {
     height: calc(100% - 44px - 44px);
-   /* position: absolute;
-    top: 44px;
-    bottom: 60px;*/
   }
 </style>

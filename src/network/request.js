@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from 'axios';
 
 /* 4.第四种方式，推荐使用 */
 export function request(config) {

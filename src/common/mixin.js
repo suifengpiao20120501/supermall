@@ -1,4 +1,5 @@
 import BackTop from "components/content/backTop/BackTop";
+import {POP, NEW, SELL, BACKTOP_DISTANCE} from "./const";
 
 export const backTopMixin = {
   components: {
@@ -22,7 +23,30 @@ export const backTopMixin = {
     },
     /* 监听是否显示右下角返回顶部图标 */
     listenShowBackTop(position) {
-      this.isShowBackTop = (-position.y) > 1000;
+      this.isShowBackTop = (-position.y) > BACKTOP_DISTANCE;
+    }
+  }
+}
+
+export const tabControlMixin = {
+  data() {
+    return {
+      currentType: POP
+    }
+  },
+  methods: {
+    tabClick(index) {
+      switch (index) {
+        case 0:
+          this.currentType = POP;
+          break;
+        case 1:
+          this.currentType = NEW;
+          break;
+        case 2:
+          this.currentType = SELL;
+          break;
+      }
     }
   }
 }

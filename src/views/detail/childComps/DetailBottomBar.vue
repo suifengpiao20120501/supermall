@@ -74,7 +74,7 @@
     line-height: 44px;
     font-size: 14px;
   }
-
+	
   .bar-right .cart {
     background-color: #ff81812e;
     color: #f66;

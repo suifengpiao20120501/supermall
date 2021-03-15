@@ -45,6 +45,7 @@
   import { getHomeMultidata, getHomeGoods } from "@/network/home";
   import { backTopMixin } from "common/mixin";
   import { debounce } from "common/utils";
+  import { POP, NEW, SELL } from "common/const";
 
   export default {
     name: "Home",
@@ -68,7 +69,7 @@
           'new': {page: 0, list: []},
           'sell': {page: 0, list: []}
         },
-        currentType: 'pop',
+        currentType: POP,
         tabOffsetTop: 0, /* tabControl到顶部距离 */
         isTabFixed: false, /* tabControl是否吸顶，默认不吸顶 */
         saveY: 0 /* 保存页面滑动后高度，默认是 0 */
@@ -95,9 +96,9 @@
       /* 1.请求多个数据 */
       this.getHomeMultidata();
       /* 2.请求商品数据 */
-      this.getHomeGoods('pop');
-      this.getHomeGoods('new');
-      this.getHomeGoods('sell');
+      this.getHomeGoods(POP);
+      this.getHomeGoods(NEW);
+      this.getHomeGoods(SELL);
     },
     mounted() {
       /* 防止轮播图加载图片刷新频繁，进行防抖操作 */
@@ -114,13 +115,13 @@
       tabClick(index) {
         switch (index) {
           case 0:
-            this.currentType = 'pop';
+            this.currentType = POP;
             break;
           case 1:
-            this.currentType = 'new';
+            this.currentType = NEW;
             break;
           case 2:
-            this.currentType = 'sell';
+            this.currentType = SELL;
             break;
         }
         this.$refs.tabControl1.currentIndex = index;
@@ -167,7 +168,6 @@
           /* 使用...语法将数组中每个元素取出来后添加到数组中，页数加1 */
           this.goods[type].list.push(...res.data.list);
           this.goods[type].page += 1;
-
           /* 页面上拉刷新一次数据后，继续刷新数据 */
           this.$refs.scroll.finishPullUp();
         })
