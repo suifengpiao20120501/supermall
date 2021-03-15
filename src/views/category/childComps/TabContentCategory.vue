@@ -1,6 +1,6 @@
 <template>
   <div>
-    <grid-view v-if="subcategories.list">
+    <grid-view :cols="2" v-if="subcategories.list">
       <div class="item" v-for="(item, index) in subcategories.list" :key="index">
         <a :href="item.link">
           <img class="item-img" :src="item.image" alt="">

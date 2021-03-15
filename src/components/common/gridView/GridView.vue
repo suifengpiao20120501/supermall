@@ -8,23 +8,23 @@
   export default {
     name: "GridView",
     props: {
-      cols: {
+      cols: { /* 几列展示 */
         type: Number,
-        default: 2
+        default: 1
       },
-      hMargin: {
-        type: Number,
-        default: 4
-      },
-      vMargin: {
+      hMargin: { /* 水平方向外边距 */
         type: Number,
         default: 4
       },
-      itemSpace: {
+      vMargin: { /* 垂直方向外边距 */
         type: Number,
         default: 4
       },
-      lineSpace: {
+      itemSpace: { /* item间距 */
+        type: Number,
+        default: 4
+      },
+      lineSpace: { /* 行间距 */
         type: Number,
         default: 4
       }

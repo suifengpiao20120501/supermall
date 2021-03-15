@@ -106,7 +106,6 @@
       },
       clickItem(index) {
         this.getSubcategories(index);
-        console.log(index);
       }
     }
   }

@@ -35,7 +35,6 @@
       itemClick(index) {
         this.currentIndex = index;
         this.$emit('clickItem', index);
-        /*console.log(index);*/
       }
     }
   }

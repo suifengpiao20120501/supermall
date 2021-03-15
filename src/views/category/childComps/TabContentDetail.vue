@@ -1,5 +1,5 @@
 <template>
-  <grid-view>
+  <grid-view :cols="2">
     <goods-list-item class="goods-list-item"
                      v-for="(item, index) in categoryDetail"
                      :key="index" :goodsItem="item"/>
