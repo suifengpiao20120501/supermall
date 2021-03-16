@@ -5,7 +5,12 @@
     </nav-bar>
     <div class="content">
       <tab-menu :categories="categories" @clickItem="clickItem"/>
-      <scroll id="tab-content" :data="[categoryData]">
+      <scroll id="tab-content"
+              ref="scroll"
+              :data="[categoryData]"
+              :probe-type="3"
+              :pull-up-load="true"
+              @pullingUp="loadMore">
         <div>
           <tab-content-category :subcategories="showSubcategory"></tab-content-category>
           <tab-control :titles="['综合', '新品', '销量']" @tabClick="tabClick"></tab-control>
@@ -25,6 +30,7 @@
   import TabContentDetail from "./childComps/TabContentDetail";
 
   import {getCategory, getSubcategory, getCategoryDetail} from "network/category";
+  import { debounce } from "common/utils";
   import {tabControlMixin} from "common/mixin";
   import {NEW, POP, SELL} from "common/const";
 
@@ -62,6 +68,14 @@
         }
         return this.categoryData[this.currentIndex].categoryDetail[this.currentType];
       }
+    },
+    mounted() {
+      /* 防止加载图片刷新频繁，进行防抖操作 */
+      const refresh = debounce(this.$refs.scroll.refresh, 300);
+      /* 监听item中图片加载完成 */
+      this.$bus.$on('itemImageLoad', () => {
+        refresh();
+      });
     },
     methods: {
       getCategories() {
@@ -106,6 +120,13 @@
       },
       clickItem(index) {
         this.getSubcategories(index);
+      },
+      /**
+       * 上拉加载更多数据
+       */
+      loadMore() {
+        /* 重新刷新，重新计算可以滚动高度 */
+        this.$refs.scroll.refresh();
       }
     }
   }
