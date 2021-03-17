@@ -7,7 +7,8 @@
                   ref="scroll"
                   :pull-up-load="true"
                   @scroll="contentScroll"
-                  :probe-type="3">
+                  :probe-type="3"
+                  @pullingUp="loadMore">
       <detail-swiper :top-images="topImages"/>
       <detail-base-info :goods="goods"/>
       <detail-shop-info :shop="shop"/>
@@ -113,6 +114,14 @@
         this.themeTopYs.push(Number.MAX_VALUE);
       }, 300)
     },
+    mounted() {
+      /* 防止加载图片刷新频繁，进行防抖操作 */
+      const refresh = debounce(this.$refs.scroll.refresh, 300);
+      /* 监听item中图片加载完成 */
+      this.$bus.$on('itemImageLoad', () => {
+        refresh();
+      });
+    },
     methods: {
       ...mapActions(['addCart']),
       imageLoad() {
@@ -160,6 +169,13 @@
         this.addCart(product).then(res => {
           this.$toast.show(res, 1500);
         });
+      },
+      /**
+       * 上拉加载更多数据
+       */
+      loadMore() {
+        /* 重新刷新，重新计算可以滚动高度 */
+        this.$refs.scroll.refresh();
       }
     }
   }

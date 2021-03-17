@@ -165,7 +165,7 @@
         /* 2.请求商品数据 */
         getHomeGoods(type, page).then(res => {
           // console.log(res);
-          /* 使用...语法将数组中每个元素取出来后添加到数组中，页数加1 */
+          /* 使用 ...语法 将数组中每个元素取出来后添加到数组中，页数加 1 */
           this.goods[type].list.push(...res.data.list);
           this.goods[type].page += 1;
           /* 页面上拉刷新一次数据后，继续刷新数据 */
@@ -178,7 +178,6 @@
 
 <style scoped>
   #home {
-    /*padding-top: 44px;*/
     height: 100vh;
     position: relative;
   }
@@ -186,25 +185,12 @@
   .home-nav {
     background-color: var(--color-tint);
     color: #fff;
-
-    /* 固定导航栏在顶部 */
-    /*position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    z-index: 9;*/
   }
 
   .tab-control {
     position: relative;
     z-index: 9;
   }
-
-  /*.tab-control {
-    position: sticky; !* 滑动页面时固定tabControl组件 *!
-    top: 44px; !* 距离顶部44px时，固定组件 *!
-    z-index: 9;
-  }*/
 
   .content {
     overflow: hidden;
@@ -213,10 +199,4 @@
     bottom: 49px;
     right: 0;
   }
-
-  /*.content {
-    height: calc(100% - 93px);
-    overflow: hidden;
-    margin-top: 44px;
-  }*/
 </style>

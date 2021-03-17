@@ -9,7 +9,7 @@ module.exports = {
       selectorBlackList: ['ignore'], /* 指定不需要转换的类 */
       minPixelValue: 1, /* 小于或等于1px不转换为视窗单位 */
       mediaQuery: false, /* 允许在媒体查询中转换px */
-      exclude: [/Category/,/TabMenu/,/TabContentDetail/,/TabContentCategory/,/GridView/] /* 指定多个不需要转换的类，数组中必须是正则表达式，匹配文件 */
+      // exclude: [/Category/,/TabMenu/,/TabContentDetail/,/TabContentCategory/,/GridView/] /* 指定多个不需要转换的类，数组中必须是正则表达式，匹配文件 */
     }
   }
 }

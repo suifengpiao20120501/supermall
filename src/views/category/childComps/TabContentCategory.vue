@@ -1,6 +1,6 @@
 <template>
   <div>
-    <grid-view :cols="2" v-if="subcategories.list">
+    <grid-view :cols="3" v-if="subcategories.list">
       <div class="item" v-for="(item, index) in subcategories.list" :key="index">
         <a :href="item.link">
           <img class="item-img" :src="item.image" alt="">
@@ -37,11 +37,12 @@
   }
 
   .item-img {
-    width: 80%;
-    margin-top: 8px;
+    width: 70%;
+    margin-top: 20px;
   }
 
   .item-text {
     margin-top: 10px;
+
   }
 </style>
