@@ -8,6 +8,7 @@
       <scroll id="tab-content"
               ref="scroll"
               :data="[categoryData]"
+              @scroll="contentScroll"
               :probe-type="3"
               :pull-up-load="true"
               @pullingUp="loadMore">
@@ -18,6 +19,8 @@
         </div>
       </scroll>
     </div>
+    <!-- 返回顶部 -->
+    <back-top @click.native="backClick" v-show="isShowBackTop"/>
   </div>
 </template>
 
@@ -31,7 +34,7 @@
 
   import {getCategory, getSubcategory, getCategoryDetail} from "network/category";
   import { debounce } from "common/utils";
-  import {tabControlMixin} from "common/mixin";
+  import {tabControlMixin, backTopMixin} from "common/mixin";
   import {NEW, POP, SELL} from "common/const";
 
   export default {
@@ -44,7 +47,7 @@
       TabContentCategory,
       TabContentDetail
     },
-    mixins: [tabControlMixin],
+    mixins: [tabControlMixin, backTopMixin],
     data() {
       return {
         categories: [],
@@ -118,6 +121,13 @@
           this.categoryData = {...this.categoryData}
         })
       },
+      /**
+       * 根据监听页面滚动的位置
+       */
+      contentScroll(position) {
+        /* 判断 BackTop 是否显示 */
+        this.listenShowBackTop(position);
+      },
       clickItem(index) {
         this.getSubcategories(index);
       },
@@ -139,7 +149,6 @@
 
   .nav-bar {
     background-color: var(--color-tint);
-    /*font-weight: 700;*/
     color: #fff;
   }
 

@@ -43,6 +43,5 @@
 
   .item-text {
     margin-top: 10px;
-
   }
 </style>
