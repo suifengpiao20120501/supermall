@@ -52,7 +52,7 @@
       return {
         categories: [],
         categoryData: {},
-        currentIndex: -1
+        currentIndex: 0
       }
     },
     created() {
