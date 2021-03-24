@@ -94,11 +94,11 @@
     },
     created() {
       /* 1.请求多个数据 */
-      this.getHomeMultidata();
+      this.getHomeMultidatas();
       /* 2.请求商品数据 */
-      this.getHomeGoods(POP);
-      this.getHomeGoods(NEW);
-      this.getHomeGoods(SELL);
+      this.getHomeAllGoods(POP);
+      this.getHomeAllGoods(NEW);
+      this.getHomeAllGoods(SELL);
     },
     mounted() {
       /* 防止轮播图加载图片刷新频繁，进行防抖操作 */
@@ -140,7 +140,7 @@
        * 上拉加载更多数据
        */
       loadMore() {
-        this.getHomeGoods(this.currentType);
+        this.getHomeAllGoods(this.currentType);
         /* 重新刷新，重新计算可以滚动高度 */
         this.$refs.scroll.refresh();
       },
@@ -151,14 +151,14 @@
       /**
        * 网络请求相关的方法
        */
-      getHomeMultidata() {
+      getHomeMultidatas() {
         /* 1.请求多个数据 */
         getHomeMultidata().then(res => {
           this.banners = res.data.banner.list;
           this.recommends = res.data.recommend.list;
         })
       },
-      getHomeGoods(type) {
+      getHomeAllGoods(type) {
         // console.log(type);
         /* 第几页 */
         const page = this.goods[type].page + 1;
