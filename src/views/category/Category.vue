@@ -52,8 +52,21 @@
       return {
         categories: [],
         categoryData: {},
-        currentIndex: -1
+        currentIndex: -1,
+        saveY: 0 /* 保存页面滑动后高度，默认是 0 */
       }
+    },
+    activated() {
+      /* 新创建组件时，页面滚动到离开时的位置 */
+      this.$refs.scroll.scrollTo(0, this.saveY);
+      /* 重新刷新，防止页面不能滚动 */
+      this.$refs.scroll.refresh();
+    },
+    deactivated() {
+      /* 离开首页时，记录离开首页时的位置 */
+      this.saveY = this.$refs.scroll.getScrollY();
+      /* 测试离开时的页面位置 */
+      console.log(this.$refs.scroll.getScrollY());
     },
     created() {
       this.getCategories();
