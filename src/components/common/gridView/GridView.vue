@@ -30,10 +30,10 @@
       }
     },
     mounted: function () {
-      setTimeout(this.autoLayout, 20)
+      setTimeout(this.autoLayout, 20);
     },
     updated: function () {
-      this.autoLayout()
+      this.autoLayout();
     },
     methods: {
       autoLayout: function () {
